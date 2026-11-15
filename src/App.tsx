@@ -415,12 +415,14 @@ function App() {
         <section className="integration-note">
           <div>
             <div className="eyebrow">GO NIX 3.0 INTEGRATION</div>
-            <h2>Enhancing the ecosystem, not replacing it.</h2>
+            <h2>Empowering creativity, innovation and learning.</h2>
             <p>
-              The hybrid AI layer is designed to complement GoNix 3.0.
-              Supabase remains responsible for authentication, learning
-              records, assessments, certificates and GoCredit. Existing
-              reward controls remain authoritative.
+              GoNix Hybrid AI enhances the GoNix ecosystem with intelligent
+              experiences that help creators explore ideas, innovators build
+              solutions and learners develop practical skills. It complements
+              GoNix 3.0 while existing platform services continue to manage
+              authentication, learning records, assessments, certificates
+              and GoCredit.
             </p>
           </div>
           <span className="integration-mark">G</span>
@@ -432,7 +434,7 @@ function App() {
           <span className="brand-mark">G</span>
           <span>GoNix <strong>Hybrid AI</strong></span>
         </a>
-        <span>Built by B12 TechHub · Independent public project</span>
+        <span>Enhancing creativity, innovation and learning across the GoNix ecosystem.</span>
         <span>Powered by B12 TechHub · GoNix Ecosystem</span>
       </footer>
     </div>

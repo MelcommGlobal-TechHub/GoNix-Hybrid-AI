@@ -70,7 +70,7 @@ export async function prepareDeviceModel(
   const model = getGenerativeModel(getFirebaseAI(), {
     mode: InferenceMode.ONLY_ON_DEVICE,
     inCloudParams: {
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
     },
   })
 
@@ -132,7 +132,7 @@ export async function runHybridInference(
   const model = getGenerativeModel(getFirebaseAI(), {
     mode: effectiveMode,
     inCloudParams: {
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 2048,
