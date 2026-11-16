@@ -1,3 +1,4 @@
+
 import {
   getGenerativeModel,
   InferenceMode,
@@ -26,11 +27,32 @@ export interface DeviceStatus {
   explanation: string
 }
 
+export interface StreamCallbacks {
+  onText?: (text: string) => void
+  maxOutputTokens?: number
+}
+
 const MODE_MAP: Record<HybridMode, InferenceMode> = {
   PREFER_ON_DEVICE: InferenceMode.PREFER_ON_DEVICE,
   PREFER_IN_CLOUD: InferenceMode.PREFER_IN_CLOUD,
   ONLY_ON_DEVICE: InferenceMode.ONLY_ON_DEVICE,
   ONLY_IN_CLOUD: InferenceMode.ONLY_IN_CLOUD,
+}
+
+const MODEL_NAME = 'gemini-3.5-flash-lite'
+const DEFAULT_OUTPUT_TOKENS = 1024
+const MAX_RETRIES = 2
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function isRetryableError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+
+  return /\b(500|502|503|504|429)\b|unavailable|overloaded|deadline exceeded|timed out|timeout/i.test(
+    message,
+  )
 }
 
 export function getDeviceStatus(): DeviceStatus {
@@ -70,7 +92,7 @@ export async function prepareDeviceModel(
   const model = getGenerativeModel(getFirebaseAI(), {
     mode: InferenceMode.ONLY_ON_DEVICE,
     inCloudParams: {
-      model: 'gemini-3.8-flash',
+      model: MODEL_NAME,
     },
   })
 
@@ -81,6 +103,7 @@ export async function runHybridInference(
   prompt: string,
   mode: HybridMode,
   cloudConsent: boolean,
+  callbacks: StreamCallbacks = {},
 ): Promise<InferenceResult> {
   const cleanPrompt = prompt.trim()
 
@@ -101,81 +124,113 @@ export async function runHybridInference(
     )
   }
 
-  // Without cloud consent, local-first is enforced as local-only.
-  // This prevents automatic cloud fallback when the device model is unavailable.
   const effectiveMode =
     mode === 'PREFER_ON_DEVICE' && !cloudConsent
       ? InferenceMode.ONLY_ON_DEVICE
       : MODE_MAP[mode]
 
-  // Never attempt inference in local-only mode unless the browser supports it.
-  // This also protects PREFER_ON_DEVICE when cloud consent is disabled.
-  if (
-    effectiveMode === InferenceMode.ONLY_ON_DEVICE &&
-    !getDeviceStatus().supported
-  ) {
+  if (effectiveMode === InferenceMode.ONLY_ON_DEVICE) {
     const status = getDeviceStatus()
-    throw new Error(
-      `Local inference is unavailable: ${status.explanation} Cloud fallback is disabled because permission was not granted. Your prompt was not sent to the cloud.`,
-    )
+
+    if (!status.supported) {
+      throw new Error(
+        `Local inference is unavailable: ${status.explanation} Cloud fallback is disabled because permission was not granted. Your prompt was not sent to the cloud.`,
+      )
+    }
   }
 
   const mayUseCloud = effectiveMode !== InferenceMode.ONLY_ON_DEVICE
 
-  // This confirms client-side App Check initialization, not Firebase Console enforcement.
   if (mayUseCloud && !appCheckConfigured) {
     throw new Error(
-      'Cloud inference is blocked because client-side Firebase App Check is not initialized. Configure the reCAPTCHA Enterprise site key first.',
+      'Cloud inference is blocked because client-side Firebase App Check is not initialized.',
     )
   }
+
+  const maxOutputTokens = Math.min(
+    4096,
+    Math.max(128, callbacks.maxOutputTokens ?? DEFAULT_OUTPUT_TOKENS),
+  )
 
   const model = getGenerativeModel(getFirebaseAI(), {
     mode: effectiveMode,
     inCloudParams: {
-      model: 'gemini-3.8-flash',
+      model: MODEL_NAME,
       generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 2048,
+        maxOutputTokens,
       },
     },
   })
 
-  const result = await model.generateContent(cleanPrompt)
-  const response = result.response
-  const source = response.inferenceSource
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
+    let receivedText = ''
 
-  if (
-    source !== InferenceSource.ON_DEVICE &&
-    source !== InferenceSource.IN_CLOUD
-  ) {
-    throw new Error('Firebase did not report a verifiable inference source.')
+    try {
+      const result = await model.generateContentStream(cleanPrompt)
+
+      for await (const chunk of result.stream) {
+        const chunkText = chunk.text()
+
+        if (chunkText) {
+          receivedText += chunkText
+          callbacks.onText?.(receivedText)
+        }
+      }
+
+      const response = await result.response
+      const source = response.inferenceSource
+
+      if (
+        source !== InferenceSource.ON_DEVICE &&
+        source !== InferenceSource.IN_CLOUD
+      ) {
+        throw new Error(
+          'Firebase did not report a verifiable inference source.',
+        )
+      }
+
+      if (source === InferenceSource.IN_CLOUD && !cloudConsent) {
+        throw new Error(
+          'Cloud inference was reported without permission. The response was not accepted.',
+        )
+      }
+
+      if (
+        effectiveMode === InferenceMode.ONLY_ON_DEVICE &&
+        source !== InferenceSource.ON_DEVICE
+      ) {
+        throw new Error(
+          'Local-only mode did not return a verified on-device response.',
+        )
+      }
+
+      const text = response.text()
+
+      if (!text.trim()) {
+        throw new Error('The model returned an empty response.')
+      }
+
+      return {
+        text,
+        source,
+        mode,
+        effectiveMode,
+      }
+    } catch (error) {
+      // Never retry after exposing partial text: that could duplicate output.
+      if (receivedText.length > 0) {
+        throw error
+      }
+
+      if (attempt >= MAX_RETRIES || !isRetryableError(error)) {
+        throw error
+      }
+
+      // Exponential backoff with jitter: approximately 1–1.5s,
+      // then 2–2.5s. The total number of attempts is capped at three.
+      await wait(1000 * 2 ** attempt + Math.random() * 500)
+    }
   }
 
-  if (source === InferenceSource.IN_CLOUD && !cloudConsent) {
-    throw new Error(
-      'Cloud inference was reported without permission. The response was not accepted.',
-    )
-  }
-
-  if (
-    effectiveMode === InferenceMode.ONLY_ON_DEVICE &&
-    source !== InferenceSource.ON_DEVICE
-  ) {
-    throw new Error(
-      'Local-only mode did not return a verified on-device response.',
-    )
-  }
-
-  const text = response.text()
-
-  if (!text.trim()) {
-    throw new Error('The model returned an empty response.')
-  }
-
-  return {
-    text,
-    source,
-    mode,
-    effectiveMode,
-  }
+  throw new Error('Inference failed after the permitted retry attempts.')
 }

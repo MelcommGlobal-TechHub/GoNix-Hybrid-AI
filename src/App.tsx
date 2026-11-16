@@ -92,7 +92,10 @@ function App() {
         setVisualResult(result)
         setSource(result.inferenceSource)
       } else {
-        const result = await runHybridInference(prompt, mode, cloudConsent)
+        const result = await runHybridInference(prompt, mode, cloudConsent, {
+          onText: (streamedText) => setResponse(streamedText),
+          maxOutputTokens: 1024,
+        })
         setResponse(result.text)
         setSource(result.source)
       }
