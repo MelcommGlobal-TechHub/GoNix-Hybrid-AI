@@ -1067,3 +1067,470 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Output format selector */
+.output-mode-selector,
+.visual-type-selector {
+  margin-bottom: 20px;
+}
+
+.output-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 9px;
+}
+
+.output-mode-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  min-height: 78px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.output-mode-option:hover,
+.output-mode-option.selected {
+  border-color: var(--blue);
+  background: rgba(59, 130, 246, .09);
+}
+
+.output-mode-option strong {
+  font-size: 12px;
+}
+
+.output-mode-option small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.visual-type-selector select {
+  width: 100%;
+  margin-top: 9px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.visual-type-selector select:focus {
+  border-color: var(--blue);
+}
+
+.download-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.download-actions .micro-copy {
+  margin-right: 5px;
+}
+
+.download-button {
+  min-width: 48px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.download-button:hover:not(:disabled) {
+  border-color: var(--blue);
+  background: rgba(59, 130, 246, .12);
+}
+
+.download-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.visual-export-surface {
+  width: 100%;
+  min-width: 0;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #111113;
+}
+
+.visual-result {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  padding: 18px;
+  color: var(--text);
+}
+
+.visual-heading h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.visual-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.diagram-preview,
+.chart-preview {
+  width: 100%;
+  min-width: 0;
+  min-height: 180px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #09090b;
+}
+
+.diagram-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.diagram-preview img {
+  display: block;
+  width: 100%;
+  max-height: 560px;
+  object-fit: contain;
+}
+
+.chart-preview {
+  padding: 12px 8px;
+}
+
+.visual-warning {
+  padding: 10px 12px;
+  border: 1px solid rgba(234, 179, 8, .35);
+  border-radius: 7px;
+  background: rgba(234, 179, 8, .07);
+  color: #facc15;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.visual-error {
+  padding: 12px;
+  border: 1px solid rgba(239, 68, 68, .35);
+  border-radius: 7px;
+  color: #fca5a5;
+  font-size: 11px;
+}
+
+.chart-origin,
+.chart-unit {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+@media (max-width: 600px) {
+  .output-mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .output-mode-option {
+    min-height: 68px;
+  }
+
+  .visual-result {
+    padding: 12px;
+  }
+
+  .visual-heading h3 {
+    font-size: 14px;
+  }
+
+  .download-actions {
+    gap: 7px;
+  }
+}
+
+/* Visual Results: infographic and mind-map layouts */
+.infographic-preview,
+.mindmap-preview {
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #09090b;
+}
+
+.infographic-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.infographic-card {
+  position: relative;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(96, 165, 250, .2);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(30, 41, 59, .7), rgba(17, 17, 19, .95));
+}
+
+.infographic-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 12px;
+  border-radius: 9px;
+  background: rgba(59, 130, 246, .16);
+  color: #93c5fd;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.infographic-card h4 {
+  margin: 0 0 7px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.infographic-card p,
+.mindmap-branch p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.infographic-tag {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: rgba(96, 165, 250, .1);
+  color: #93c5fd;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.mindmap-root {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 24px;
+  padding: 13px 22px;
+  border: 1px solid rgba(96, 165, 250, .55);
+  border-radius: 30px;
+  background: rgba(37, 99, 235, .2);
+  color: #bfdbfe;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.mindmap-branches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mindmap-branch {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: #111827;
+}
+
+.mindmap-topic {
+  margin-bottom: 7px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.mindmap-branch ul {
+  margin: 10px 0 0;
+  padding-left: 17px;
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.mindmap-edge-label {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+@media (max-width: 600px) {
+  .infographic-preview,
+  .mindmap-preview {
+    padding: 10px;
+  }
+
+  .infographic-grid,
+  .mindmap-branches {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .infographic-card {
+    padding: 13px;
+  }
+}
+
+/* Native React diagram and flowchart renderer */
+.diagram-preview {
+  display: block;
+  width: 100%;
+  min-height: 180px;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.diagram-node-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: max-content;
+}
+
+.diagram-flowchart .diagram-node-list {
+  flex-direction: column;
+  min-width: 100%;
+}
+
+.diagram-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 190px;
+  min-height: 90px;
+  padding: 18px 14px 14px;
+  border: 1px solid rgba(96, 165, 250, .4);
+  border-radius: 12px;
+  background: rgba(30, 64, 175, .13);
+  color: #e2e8f0;
+  text-align: center;
+  white-space: normal;
+}
+
+.diagram-node strong {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.diagram-node p {
+  margin: 0;
+  color: #a1a1aa;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.diagram-node-number {
+  color: #60a5fa;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.diagram-node-input,
+.diagram-node-output {
+  border-color: rgba(52, 211, 153, .55);
+  border-radius: 28px;
+  background: rgba(6, 95, 70, .16);
+}
+
+.diagram-node-decision {
+  border-color: rgba(251, 191, 36, .6);
+  border-radius: 5px;
+  background: rgba(146, 64, 14, .15);
+  transform: rotate(0deg);
+}
+
+.diagram-node-process {
+  border-color: rgba(167, 139, 250, .55);
+  background: rgba(91, 33, 182, .15);
+}
+
+.diagram-connection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #93c5fd;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.diagram-arrow {
+  color: #60a5fa;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.diagram-edge-label {
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: #fbbf24;
+  font-size: 9px;
+}
+
+.diagram-edge-target {
+  color: #a1a1aa;
+  font-size: 9px;
+}
+
+.diagram-flowchart .diagram-connection {
+  flex-direction: column;
+}
+
+@media (max-width: 600px) {
+  .diagram-preview {
+    padding: 12px 8px;
+  }
+
+  .diagram-horizontal .diagram-node-list {
+    align-items: stretch;
+    flex-direction: column;
+    min-width: 100%;
+  }
+
+  .diagram-node {
+    width: min(100%, 280px);
+  }
+
+  .diagram-connection {
+    flex-wrap: wrap;
+  }
+}

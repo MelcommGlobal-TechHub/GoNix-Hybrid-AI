@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   getDeviceStatus,
   prepareDeviceModel,
@@ -6,6 +6,10 @@ import {
   type HybridMode,
 } from './lib/hybrid-ai'
 import { firebaseConfigured, appCheckConfigured } from './lib/firebase'
+import { generateVisualResult } from './lib/outputs/visual-generator'
+import { downloadTextResult, downloadVisualResult } from './lib/outputs/downloads'
+import VisualRenderer from './lib/outputs/VisualRenderer'
+import type { OutputMode, VisualResult, VisualType } from './lib/outputs/types'
 import './App.css'
 
 const modes: {
@@ -40,6 +44,11 @@ function App() {
   const [cloudConsent, setCloudConsent] = useState(false)
   const [prompt, setPrompt] = useState('')
   const [response, setResponse] = useState('')
+  const [outputMode, setOutputMode] = useState<OutputMode>('text')
+  const [visualType, setVisualType] = useState<VisualType>('flowchart')
+  const [visualResult, setVisualResult] = useState<VisualResult | null>(null)
+  const [downloading, setDownloading] = useState(false)
+  const visualRef = useRef<HTMLDivElement>(null)
   const [source, setSource] = useState<'on_device' | 'in_cloud' | null>(null)
   const [loading, setLoading] = useState(false)
   const [preparing, setPreparing] = useState(false)
@@ -69,16 +78,62 @@ function App() {
     setLoading(true)
     setError('')
     setResponse('')
+    setVisualResult(null)
     setSource(null)
 
     try {
-      const result = await runHybridInference(prompt, mode, cloudConsent)
-      setResponse(result.text)
-      setSource(result.source)
+      if (outputMode === 'visual') {
+        const result = await generateVisualResult(
+          prompt,
+          visualType,
+          mode,
+          cloudConsent,
+        )
+        setVisualResult(result)
+        setSource(result.inferenceSource)
+      } else {
+        const result = await runHybridInference(prompt, mode, cloudConsent)
+        setResponse(result.text)
+        setSource(result.source)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Inference request failed.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleTextDownload(format: 'pdf' | 'docx' | 'txt') {
+    if (!response.trim()) return
+
+    setDownloading(true)
+    setError('')
+
+    try {
+      await downloadTextResult('GoNix Hybrid AI Response', response, format)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Text download failed.')
+    } finally {
+      setDownloading(false)
+    }
+  }
+
+  async function handleVisualDownload(format: 'png' | 'svg' | 'pdf') {
+    if (!visualRef.current || !visualResult) return
+
+    setDownloading(true)
+    setError('')
+
+    try {
+      await downloadVisualResult(
+        visualRef.current,
+        visualResult.title,
+        format,
+      )
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Visual download failed.')
+    } finally {
+      setDownloading(false)
     }
   }
 
@@ -224,6 +279,62 @@ function App() {
                 <span className="subtle-label">02 / INPUT</span>
               </div>
 
+              <div className="output-mode-selector">
+                <span className="input-label">OUTPUT FORMAT</span>
+                <div className="output-mode-grid">
+                  <button
+                    type="button"
+                    className={`output-mode-option ${outputMode === 'text' ? 'selected' : ''}`}
+                    onClick={() => {
+                      setOutputMode('text')
+                      setError('')
+                      setVisualResult(null)
+                    }}
+                    aria-pressed={outputMode === 'text'}
+                  >
+                    <strong>Text Results</strong>
+                    <small>Answers, explanations and documents</small>
+                  </button>
+                  <button
+                    type="button"
+                    className={`output-mode-option ${outputMode === 'visual' ? 'selected' : ''}`}
+                    onClick={() => {
+                      setOutputMode('visual')
+                      setError('')
+                      setResponse('')
+                    }}
+                    aria-pressed={outputMode === 'visual'}
+                  >
+                    <strong>Visual Results</strong>
+                    <small>Diagrams, charts and infographics</small>
+                  </button>
+                </div>
+              </div>
+
+              {outputMode === 'visual' && (
+                <div className="visual-type-selector">
+                  <label className="input-label" htmlFor="visual-type">
+                    VISUAL TYPE
+                  </label>
+                  <select
+                    id="visual-type"
+                    value={visualType}
+                    onChange={(event) => setVisualType(event.target.value as VisualType)}
+                  >
+                    <option value="infographic">Infographic</option>
+                    <option value="diagram">Diagram</option>
+                    <option value="flowchart">Flowchart</option>
+                    <option value="mindmap">Mind map</option>
+                    <option value="chart">Chart</option>
+                    <option value="graph">Graph</option>
+                  </select>
+                  <p className="micro-copy">
+                    AI-generated image illustrations are not enabled on the current Firebase plan.
+                    Structured visual generation remains available.
+                  </p>
+                </div>
+              )}
+
               <label className="input-label" htmlFor="prompt">
                 MESSAGE
               </label>
@@ -279,12 +390,12 @@ function App() {
               </button>
             </div>
 
-            {(response || error || loading) && (
+            {(response || visualResult || error || loading) && (
               <div className="panel response-panel">
                 <div className="panel-heading">
                   <div>
-                    <h3>Inference result</h3>
-                    <p>Response and actual execution source.</p>
+                    <h3>{outputMode === 'visual' ? 'Visual result' : 'Text result'}</h3>
+                    <p>Generated output and actual execution source.</p>
                   </div>
                   {source && (
                     <span className={`source-badge ${source === 'on_device' ? 'local' : 'cloud'}`}>
@@ -293,9 +404,41 @@ function App() {
                   )}
                 </div>
 
-                {loading && <div className="loading-line">Generating response...</div>}
+                {loading && (
+                  <div className="loading-line">
+                    {outputMode === 'visual' ? 'Generating visual result...' : 'Generating response...'}
+                  </div>
+                )}
+
                 {error && <div className="error-message">{error}</div>}
-                {response && <div className="response-text">{response}</div>}
+
+                {response && (
+                  <>
+                    <div className="response-text">{response}</div>
+                    <div className="download-actions">
+                      <span className="micro-copy">DOWNLOAD TEXT</span>
+                      <button type="button" className="download-button" onClick={() => handleTextDownload('pdf')} disabled={downloading}>PDF</button>
+                      <button type="button" className="download-button" onClick={() => handleTextDownload('docx')} disabled={downloading}>DOCX</button>
+                      <button type="button" className="download-button" onClick={() => handleTextDownload('txt')} disabled={downloading}>TXT</button>
+                    </div>
+                  </>
+                )}
+
+                {visualResult && (
+                  <>
+                    <div className="visual-export-surface" ref={visualRef}>
+                      <VisualRenderer visual={visualResult} />
+                    </div>
+                    <div className="download-actions">
+                      <span className="micro-copy">DOWNLOAD VISUAL</span>
+                      <button type="button" className="download-button" onClick={() => handleVisualDownload('png')} disabled={downloading}>PNG</button>
+                      <button type="button" className="download-button" onClick={() => handleVisualDownload('svg')} disabled={downloading}>SVG</button>
+                      <button type="button" className="download-button" onClick={() => handleVisualDownload('pdf')} disabled={downloading}>PDF</button>
+                    </div>
+                  </>
+                )}
+
+                {downloading && <div className="micro-copy">Preparing download...</div>}
               </div>
             )}
           </div>
