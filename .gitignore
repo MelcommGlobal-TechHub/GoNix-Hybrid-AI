@@ -46,3 +46,8 @@ service-account.json
 *.backup
 *.bak
 *.tmp
+
+# Development backups and temporary files
+backups/
+*.backup-*
+*.pre-native-backup

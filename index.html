@@ -4,8 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#09090b" />
-    <meta name="description" content="GoNix Hybrid AI — privacy-aware AI experiences combining on-device intelligence with Firebase AI Logic cloud inference." />
-    <title>GoNix Hybrid AI — Intelligent by Design</title>
+    <meta name="description" content="GoNix EduPlus — Learn More. Become More. A privacy-aware hybrid AI learning experience combining on-device intelligence with Firebase AI Logic cloud inference." />
+    <meta name="application-name" content="GoNix EduPlus" />
+    <link rel="icon" type="image/svg+xml" href="/gonix-eduplus-icon.svg" />
+    <link rel="apple-touch-icon" href="/gonix-eduplus-icon-512.png" />
+    <title>GoNix EduPlus — Learn More. Become More.</title>
+    <script>
+      try {
+        var savedTheme = localStorage.getItem('gonix-eduplus-theme');
+        if (['original', 'ice', 'midnight', 'aurora', 'warm', 'system'].includes(savedTheme)) {
+          document.documentElement.dataset.theme = savedTheme;
+        } else {
+          document.documentElement.dataset.theme = 'original';
+        }
+      } catch (error) {
+        document.documentElement.dataset.theme = 'original';
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
