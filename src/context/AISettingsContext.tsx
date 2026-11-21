@@ -51,7 +51,7 @@ function readSettings(): AISettings {
       'PREFER_ON_DEVICE', 'PREFER_IN_CLOUD', 'ONLY_ON_DEVICE', 'ONLY_IN_CLOUD',
     ]
     const visualTypes: VisualType[] = [
-      'illustration', 'infographic', 'diagram', 'flowchart',
+      'infographic', 'diagram', 'flowchart',
       'mindmap', 'chart', 'graph',
     ]
 

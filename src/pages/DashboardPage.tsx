@@ -8,7 +8,7 @@ export default function DashboardPage() {
           <img
             className="edu-dashboard-hero-image"
             src="/gonix-eduplus-dashboard-hero.png"
-            alt="GoNix Hybrid AI: intelligent learning with on-device and cloud AI"
+            alt="NEXORA: intelligent learning with on-device and cloud AI"
           />
 
           <Link className="edu-hero-ai-button" to="/hybrid-ai">
@@ -19,19 +19,19 @@ export default function DashboardPage() {
         </div>
 
         <h1 id="dashboard-heading">
-          Learn More. <span>Become More.</span>
+          The Next Era. <span>Starts Here.</span>
         </h1>
       </section>
 
       <section className="eduplus-welcome" aria-labelledby="eduplus-heading">
         <span className="edu-kicker">YOUR LEARNING JOURNEY</span>
-        <h2 id="eduplus-heading">eduPlus</h2>
+        <h2 id="eduplus-heading">NEXORA</h2>
         <p>
           Build knowledge, practise your skills and take meaningful steps
           towards successful learning and personal growth.
         </p>
         <p className="eduplus-menu-notice">
-          <strong>Explore more with GoNix EduPlus.</strong>
+          <strong>Explore more with NEXORA.</strong>
           <span>
             Open the menu ☰ to discover your learning spaces, courses,
             Student Studio, Lecturer Studio and other platform features.

@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import './AppShell.css'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { signOut } from 'firebase/auth'
+import { getFirebaseAuth } from '../lib/firebase'
 import EduPlusLogo from '../components/EduPlusLogo'
 import CustomerCare from '../components/CustomerCare'
 
 const navigation = [
-  { label: 'Dashboard', path: '/', icon: '⌂' },
+  { label: 'Dashboard', path: '/dashboard', icon: '⌂' },
+  { label: 'Creator Studio', path: '/creator-studio', icon: '✦' },
   { label: 'My Learning', path: '/learning', icon: '▤' },
   { label: 'Student Studio', path: '/student-studio', icon: '✦' },
   { label: 'Lecturer Studio', path: '/lecturer-studio', icon: '◈' },
@@ -18,14 +20,14 @@ const navigation = [
   { label: 'Community', path: '/community', icon: '◎' },
   { label: 'Progress & Skills', path: '/progress', icon: '▥' },
   { label: 'Opportunities', path: '/opportunities', icon: '↗' },
-  { label: 'GoNix Hybrid AI', path: '/hybrid-ai', icon: '✧' },
-  { label: 'GoNix AI Agent', path: '/ai-agent', icon: '✦' },
+  { label: 'NEXORA Intelligence', path: '/hybrid-ai', icon: '✧' },
+  { label: 'NEXORA AI Agent', path: '/ai-agent', icon: '✦' },
   { label: 'Settings', path: '/settings', icon: '⚙' },
 ]
 
 const ecosystem = [
-  { name: 'GoNix', mark: 'G', status: 'Ecosystem' },
-  { name: 'GoNix EduPlus', mark: 'E+', status: 'Current platform' },
+  { name: 'NEXORA', mark: 'N', status: 'International ecosystem' },
+  { name: 'NEXORA Academy', mark: 'NA', status: 'Learning ecosystem' },
   { name: 'NativeMarket', mark: 'N', status: 'Coming soon' },
   { name: 'Arch101', mark: 'A', status: 'Coming soon' },
   { name: 'AgroPlusAI', mark: 'Ag', status: 'Coming soon' },
@@ -36,10 +38,30 @@ const ecosystem = [
 
 export default function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
+  const [signOutError, setSignOutError] = useState('')
   const location = useLocation()
+  const navigate = useNavigate()
 
   function closeMenu() {
     setMenuOpen(false)
+  }
+
+  async function handleSignOut() {
+    if (signingOut) return
+
+    setSigningOut(true)
+    setSignOutError('')
+
+    try {
+      await signOut(getFirebaseAuth())
+      closeMenu()
+      navigate('/', { replace: true })
+    } catch {
+      setSignOutError('Sign out failed. Please try again.')
+    } finally {
+      setSigningOut(false)
+    }
   }
 
   return (
@@ -58,14 +80,19 @@ export default function AppLayout() {
             <span />
           </button>
 
-          <Link className="edu-brand" to="/" onClick={closeMenu}>
+          <Link className="edu-brand" to="/dashboard" onClick={closeMenu}>
             <EduPlusLogo />
           </Link>
         </div>
 
         <div className="edu-header-right">
-          <span className="edu-tagline">LEARN MORE. BECOME MORE.</span>
-          <Link className="edu-notification-button" to="/notifications" aria-label="Open notifications" title="Notifications">
+          <span className="edu-tagline">THE NEXT ERA STARTS HERE.</span>
+          <Link
+            className="edu-notification-button"
+            to="/notifications"
+            aria-label="Open notifications"
+            title="Notifications"
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
               <path d="M10 21h4" />
@@ -89,16 +116,20 @@ export default function AppLayout() {
 
       <aside className={`edu-sidebar ${menuOpen ? 'is-open' : ''}`}>
         <div className="edu-sidebar-heading">
-          <span>LEARNING SPACE</span>
+          <span>NEXORA NAVIGATION</span>
           <button type="button" onClick={closeMenu} aria-label="Close menu">×</button>
         </div>
 
         <nav className="edu-navigation" aria-label="Main navigation">
+          <Link className="edu-nav-link edu-home-link" to="/" onClick={closeMenu}>
+            <span className="edu-nav-icon" aria-hidden="true">⌂</span>
+            <span>NEXORA Home</span>
+          </Link>
+
           {navigation.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
-              end={item.path === '/'}
               onClick={closeMenu}
               className={({ isActive }) => `edu-nav-link ${isActive ? 'active' : ''}`}
             >
@@ -110,8 +141,21 @@ export default function AppLayout() {
 
         <div className="edu-sidebar-note">
           <span className="edu-note-icon">✦</span>
-          <strong>Learn. Practise. Grow.</strong>
-          <p>Your learning journey, connected to intelligent tools and opportunities.</p>
+          <strong>Learn. Create. Build. Launch.</strong>
+          <p>Your connected world of intelligence, creativity and opportunity.</p>
+        </div>
+
+        <div className="edu-sidebar-actions">
+          {signOutError && <p className="edu-signout-error" role="alert">{signOutError}</p>}
+          <button
+            type="button"
+            className="edu-signout-button"
+            onClick={() => void handleSignOut()}
+            disabled={signingOut}
+          >
+            <span aria-hidden="true">↪</span>
+            {signingOut ? 'Signing out…' : 'Sign out'}
+          </button>
         </div>
       </aside>
 
@@ -125,12 +169,12 @@ export default function AppLayout() {
         <div className="edu-footer-heading">
           <div>
             <span className="edu-kicker">THE CONNECTED ECOSYSTEM</span>
-            <h2>Explore the GoNix family</h2>
+            <h2>Explore the NEXORA ecosystem</h2>
           </div>
           <span className="edu-footer-caption">Innovation, learning and opportunity</span>
         </div>
 
-        <div className="edu-brand-track" aria-label="GoNix ecosystem brands">
+        <div className="edu-brand-track" aria-label="NEXORA ecosystem brands">
           <div className="edu-brand-track-inner">
             {[...ecosystem, ...ecosystem].map((brand, index) => (
               <div className="edu-brand-tile" key={`${brand.name}-${index}`}>
@@ -143,8 +187,8 @@ export default function AppLayout() {
         </div>
 
         <div className="edu-footer-bottom">
-          <span>GoNix EduPlus · Learn More. Become More.</span>
-          <span>Powered by B12 TechHub · GoNix Ecosystem</span>
+          <span>NEXORA · The Next Era Starts Here.</span>
+          <span>An international AI ecosystem by Melcomm Global</span>
         </div>
       </footer>
     </div>

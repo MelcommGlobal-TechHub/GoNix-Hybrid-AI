@@ -2478,3 +2478,49 @@
     bottom: max(14px, env(safe-area-inset-bottom));
   }
 }
+
+/* NEXORA navigation actions */
+.edu-home-link {
+  margin-bottom: 7px;
+  border-color: var(--border);
+  background: var(--soft);
+}
+
+.edu-sidebar-actions {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.edu-signout-button {
+  width: 100%;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 13px;
+  border: 1px solid color-mix(in srgb, #ef4444 35%, var(--border));
+  border-radius: 11px;
+  background: transparent;
+  color: #ef4444;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.edu-signout-button:hover {
+  background: color-mix(in srgb, #ef4444 9%, transparent);
+}
+
+.edu-signout-button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.edu-signout-error {
+  color: #ef4444;
+  font-size: 12px;
+  line-height: 1.5;
+}

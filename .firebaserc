@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "gonix-hybrid-ai"
-  }
+  },
+  "targets": {
+    "gonix-hybrid-ai": {
+      "hosting": {
+        "nexora-staging": [
+          "nexora-staging"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

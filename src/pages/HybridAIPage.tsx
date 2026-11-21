@@ -292,8 +292,8 @@ function HybridAIPage() {
                     <option value="graph">Graph</option>
                   </select>
                   <p className="micro-copy">
-                    AI-generated image illustrations are not enabled on the current Firebase plan.
-                    Structured visual generation remains available.
+                    Image generation will be available in the dedicated Image Studio.
+                    Structured visual generation is available here.
                   </p>
                 </div>
               )}

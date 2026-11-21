@@ -32,7 +32,6 @@ const modes: { id: HybridMode; name: string; description: string }[] = [
 ]
 
 const visualTypes: { id: VisualType; label: string }[] = [
-  { id: 'illustration', label: 'AI illustration' },
   { id: 'infographic', label: 'Infographic' },
   { id: 'diagram', label: 'Diagram' },
   { id: 'flowchart', label: 'Flowchart' },

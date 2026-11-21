@@ -5,84 +5,68 @@ export default function EduPlusLogo() {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1600 420"
       role="img"
-      aria-labelledby="edu-logo-title"
+      aria-labelledby="nexora-logo-title"
     >
-      <title id="edu-logo-title">GoNix EduPlus — Learn More. Become More.</title>
+      <title id="nexora-logo-title">NEXORA — The Next Era Starts Here</title>
 
       <defs>
-        <linearGradient id="edu-logo-gradient" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="nexora-logo-gradient" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="var(--blue)" />
-          <stop offset="1" stopColor="var(--violet)" />
+          <stop offset="0.55" stopColor="var(--violet)" />
+          <stop offset="1" stopColor="var(--blue)" />
         </linearGradient>
       </defs>
 
-      <g transform="translate(35 28)">
+      <g transform="translate(20 35)">
         <path
-          d="M260 38 A155 155 0 1 0 282 290"
+          d="M35 240 C85 325 185 335 260 255 L345 165"
           fill="none"
-          stroke="url(#edu-logo-gradient)"
-          strokeWidth="25"
+          stroke="url(#nexora-logo-gradient)"
+          strokeWidth="42"
           strokeLinecap="round"
         />
         <path
-          d="M48 270 C100 355 260 365 340 235"
+          d="M65 95 C120 25 210 35 275 95 L365 185"
           fill="none"
-          stroke="url(#edu-logo-gradient)"
-          strokeWidth="18"
+          stroke="url(#nexora-logo-gradient)"
+          strokeWidth="42"
           strokeLinecap="round"
         />
         <path
-          d="M105 185 H240 L205 220 H150"
+          d="M80 270 L305 65"
           fill="none"
-          stroke="var(--text)"
-          strokeWidth="28"
+          stroke="url(#nexora-logo-gradient)"
+          strokeWidth="34"
           strokeLinecap="round"
-          strokeLinejoin="round"
         />
         <path
-          d="M300 35 l10 28 28 10 -28 10 -10 28 -10 -28 -28 -10 28 -10z"
-          fill="url(#edu-logo-gradient)"
+          d="M365 25 l9 25 25 9 -25 9 -9 25 -9 -25 -25 -9 25 -9z"
+          fill="url(#nexora-logo-gradient)"
         />
       </g>
 
       <text
-        x="430"
-        y="205"
+        x="460"
+        y="215"
         fontFamily="Inter, Arial, sans-serif"
-        fontSize="120"
-        fontWeight="750"
+        fontSize="142"
+        fontWeight="850"
+        letterSpacing="3"
         fill="var(--text)"
       >
-        GoNix
+        NEXORA
       </text>
 
       <text
-        x="790"
-        y="205"
+        x="470"
+        y="300"
         fontFamily="Inter, Arial, sans-serif"
-        fontSize="120"
-        fontWeight="750"
-        fill="url(#edu-logo-gradient)"
-      >
-        EduPlus
-      </text>
-
-      <path
-        d="M795 230 Q1110 260 1390 225"
-        fill="none"
-        stroke="url(#edu-logo-gradient)"
-        strokeWidth="8"
-      />
-
-      <text
-        x="435"
-        y="305"
-        fontFamily="Inter, Arial, sans-serif"
-        fontSize="34"
-        letterSpacing="10"
+        fontSize="31"
+        fontWeight="600"
+        letterSpacing="8"
         fill="var(--muted)"
       >
-        LEARN MORE. BECOME MORE.
+        THE NEXT ERA STARTS HERE.
       </text>
     </svg>
   )

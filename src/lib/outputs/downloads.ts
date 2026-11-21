@@ -1,6 +1,3 @@
-import { jsPDF } from 'jspdf'
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx'
-import { toPng, toSvg } from 'html-to-image'
 import type { DownloadFormat } from './types'
 
 function saveBlob(blob: Blob, filename: string) {
@@ -40,6 +37,7 @@ export async function downloadTextResult(
   }
 
   if (format === 'pdf') {
+    const { jsPDF } = await import('jspdf')
     const pdf = new jsPDF()
     const margin = 16
     const pageWidth = pdf.internal.pageSize.getWidth()
@@ -70,6 +68,7 @@ export async function downloadTextResult(
     return
   }
 
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = await import('docx')
   const documentFile = new Document({
     sections: [{
       children: [
@@ -98,6 +97,7 @@ export async function downloadVisualResult(
   const filename = safeFilename(title)
 
   if (format === 'svg') {
+    const { toSvg } = await import('html-to-image')
     const dataUrl = await toSvg(element, {
       backgroundColor: '#111113',
       pixelRatio: 2,
@@ -109,6 +109,7 @@ export async function downloadVisualResult(
     return
   }
 
+  const { toPng } = await import('html-to-image')
   const dataUrl = await toPng(element, {
     backgroundColor: '#111113',
     pixelRatio: 2,
@@ -121,6 +122,7 @@ export async function downloadVisualResult(
     return
   }
 
+  const { jsPDF } = await import('jspdf')
   const pdf = new jsPDF({
     orientation: 'landscape',
     unit: 'px',

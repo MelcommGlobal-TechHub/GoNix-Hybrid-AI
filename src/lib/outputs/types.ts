@@ -1,7 +1,6 @@
 export type OutputMode = 'text' | 'visual'
 
 export type VisualType =
-  | 'illustration'
   | 'infographic'
   | 'diagram'
   | 'flowchart'

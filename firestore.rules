@@ -1,0 +1,76 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function verifiedOwner(uid) {
+      return owner(uid) && request.auth.token.email_verified == true;
+    }
+
+    function validProfile(data) {
+      return data.keys().hasAll([
+          'displayName', 'headline', 'country', 'education',
+          'bio', 'skills', 'interests', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'displayName', 'headline', 'country', 'education',
+          'bio', 'skills', 'interests', 'createdAt', 'updatedAt',
+          'dateOfBirth', 'phoneNumber'
+        ])
+        && data.displayName is string
+        && data.displayName.size() >= 2
+        && data.displayName.size() <= 80
+        && data.headline is string && data.headline.size() <= 160
+        && data.country is string && data.country.size() > 0
+        && data.country.size() <= 80
+        && data.education is string && data.education.size() <= 160
+        && data.bio is string && data.bio.size() <= 2000
+        && data.skills is string && data.skills.size() <= 1000
+        && data.interests is string && data.interests.size() <= 1000
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && (!('dateOfBirth' in data)
+          || (data.dateOfBirth is timestamp
+            && data.dateOfBirth <= request.time))
+        && (!('phoneNumber' in data)
+          || (data.phoneNumber is string
+            && data.phoneNumber.size() <= 25
+            && data.phoneNumber.matches('^(\\+[1-9][0-9]{6,14})?$')));
+    }
+
+    match /users/{uid} {
+      allow get: if verifiedOwner(uid);
+      allow list: if false;
+
+      allow create: if owner(uid)
+        && (
+          (request.auth.token.email_verified == true
+            && validProfile(request.resource.data)
+            && request.resource.data.createdAt == request.time
+            && request.resource.data.updatedAt == request.time)
+          ||
+          (request.auth.token.email_verified == false
+            && validProfile(request.resource.data)
+            && ('dateOfBirth' in request.resource.data)
+            && request.resource.data.dateOfBirth is timestamp
+            && request.resource.data.dateOfBirth <= request.time
+            && request.resource.data.createdAt == request.time
+            && request.resource.data.updatedAt == request.time)
+        );
+
+      allow update: if verifiedOwner(uid)
+        && validProfile(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

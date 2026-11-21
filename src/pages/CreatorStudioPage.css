@@ -1,0 +1,270 @@
+.creator-studio-page {
+  display: grid;
+  gap: 30px;
+}
+
+.creator-studio-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(27px, 5vw, 55px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 85% 12%, color-mix(in srgb, var(--blue) 25%, transparent), transparent 45%),
+    linear-gradient(130deg, var(--surface), var(--surface-raised, var(--surface)));
+}
+
+.creator-studio-hero h1 {
+  max-width: 850px;
+  margin: 15px 0;
+  font-size: clamp(35px, 6vw, 64px);
+  line-height: 1.04;
+  letter-spacing: -.055em;
+}
+
+.creator-studio-hero h1 span {
+  color: var(--blue);
+}
+
+.creator-studio-hero p {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.creator-studio-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 24px;
+}
+
+.creator-studio-hero-meta span,
+.creator-studio-status,
+.creator-studio-count {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.creator-studio-section {
+  display: grid;
+  gap: 17px;
+}
+
+.creator-studio-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.creator-studio-section-heading h2,
+.creator-studio-engine-panel h2 {
+  margin: 8px 0 0;
+  font-size: clamp(20px, 3vw, 27px);
+  letter-spacing: -.04em;
+}
+
+.creator-studio-search {
+  display: grid;
+  gap: 8px;
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.creator-studio-search input {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.creator-studio-search input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 15%, transparent);
+}
+
+.creator-studio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.creator-studio-card {
+  position: relative;
+  display: flex;
+  min-height: 185px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 21px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.creator-studio-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue);
+}
+
+.creator-studio-card-number {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.creator-studio-card h3 {
+  margin: 17px 0 7px;
+  font-size: 19px;
+  letter-spacing: -.03em;
+}
+
+.creator-studio-card p,
+.creator-studio-environment p,
+.creator-studio-engine-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.creator-studio-card-action {
+  margin-top: auto;
+  padding-top: 18px;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.creator-studio-environment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.creator-studio-environment {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.creator-studio-environment h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.creator-studio-status {
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.creator-studio-engine-panel {
+  padding: clamp(20px, 4vw, 30px);
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  background: var(--surface);
+}
+
+.creator-studio-engine-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 35px;
+  margin-top: 8px;
+}
+
+.creator-studio-engine-stats div {
+  display: grid;
+  gap: 4px;
+}
+
+.creator-studio-engine-stats strong {
+  font-size: 26px;
+}
+
+.creator-studio-engine-stats span,
+.creator-studio-footnote {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.creator-studio-footnote {
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  line-height: 1.7;
+}
+
+.creator-studio-back {
+  width: fit-content;
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.creator-studio-tags,
+.creator-studio-output-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.creator-studio-tags span,
+.creator-studio-output {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.creator-studio-output {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.creator-studio-output span {
+  color: var(--blue);
+}
+
+@media (min-width: 900px) {
+  .creator-studio-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .creator-studio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .creator-studio-environment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .creator-studio-card {
+    min-height: 155px;
+  }
+}
